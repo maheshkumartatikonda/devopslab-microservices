@@ -1,0 +1,63 @@
+# --- MySQL Service ---
+apiVersion: v1
+kind: Service
+metadata:
+  name: mysqldb # 1. Other apps will use this hostname
+spec:
+  ports:
+    - port: 3306
+  selector:
+    app: mysqldb
+---
+# --- MySQL Deployment ---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: mysqldb
+spec:
+  selector:
+    matchLabels:
+      app: mysqldb
+  template:
+    metadata:
+      labels:
+        app: mysqldb
+    spec:
+      containers:
+      - name: mysql
+        image: mysql:8.0
+        env:
+        - name: MYSQL_ROOT_PASSWORD
+          value: "root"
+        - name: MYSQL_DATABASE
+          value: "productdb"
+
+---
+# --- MongoDB Service ---
+apiVersion: v1
+kind: Service
+metadata:
+  name: mongodb # 2. MATCHES YOUR HARDCODED JAVA CONFIG
+spec:
+  ports:
+    - port: 27017
+  selector:
+    app: mongodb
+---
+# --- MongoDB Deployment ---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: mongodb
+spec:
+  selector:
+    matchLabels:
+      app: mongodb
+  template:
+    metadata:
+      labels:
+        app: mongodb
+    spec:
+      containers:
+      - name: mongo
+        image: mongo:6.0
